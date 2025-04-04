@@ -16,7 +16,7 @@ BuildRequires: make (postgresql-server-devel or postgresql17-server-devel) gcc
 BuildRequires: cracklib-devel
 %endif
 #the lowest version on fedora 42 is 16.0
-Requires: postgresql >= 12.0
+Requires: (postgresql >= 12.0 or postgresql17)
 %if %{deny_easy_pass} == 1
 Requires: cracklib cracklib-dicts words
 %endif
@@ -63,6 +63,7 @@ cp updates/* %{buildroot}%{_datadir}/credcheck
 
 #TODO
 #this needs to be done but the question is whether by the package install or the user
+#it also requires the words package to function
 #%if %{deny_easy_pass} == 1
 ##this is necessary or the password is easily cracked check
 ##goes off on everything (the files can't even be created as empty)
