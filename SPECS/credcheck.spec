@@ -11,10 +11,11 @@ Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
 
 %global deny_easy_pass 1
 
-BuildRequires: make postgresql-server-devel gcc
+BuildRequires: make (postgresql-server-devel or postgresql17-server-devel) gcc
 %if %{deny_easy_pass} == 1
 BuildRequires: cracklib-devel
 %endif
+#the lowest version on fedora 42 is 16.0
 Requires: postgresql >= 12.0
 %if %{deny_easy_pass} == 1
 Requires: cracklib cracklib-dicts words
@@ -56,15 +57,19 @@ sed -i 's/#SHLIB_LINK/SHLIB_LINK/g' %{_builddir}/%{name}-%{version}/Makefile
 
 %install
 %make_install
-%if %{deny_easy_pass} == 1
-#this is necessary or the password is easily cracked check
-#goes off on everything (the files can't even be created as empty)
-mkdict /usr/share/dict/* | sudo cracklib-packer /usr/lib/cracklib_dict
-%endif
-
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/credcheck
 cp updates/* %{buildroot}%{_datadir}/credcheck
+
+#TODO
+#this needs to be done but the question is whether by the package install or the user
+#%if %{deny_easy_pass} == 1
+##this is necessary or the password is easily cracked check
+##goes off on everything (the files can't even be created as empty)
+#mkdict /usr/share/dict/* | sudo cracklib-packer /usr/lib/cracklib_dict
+#also needs to append credcheck to shared_preloaded_libraries in /var/lib/pgsql/data/postgresql.conf
+#and then restart the postgresql.service
+#%endif
 
 %files
 %{_libdir}/pgsql/credcheck.so
