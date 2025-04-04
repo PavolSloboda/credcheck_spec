@@ -4,6 +4,7 @@ Release: %autorelease
 Summary: PostreSQL extension for credential checking
 #TODO
 #the license does not match
+#it does match the MIT - 0 License but not in name
 License: PostgreSQL License
 URL: https://github.com/HexaCluster/credcheck
 Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
@@ -62,12 +63,15 @@ mkdict /usr/share/dict/* | sudo cracklib-packer /usr/lib/cracklib_dict
 %endif
 
 #creates the credcheck file to contain the patches
-sudo mkdir -p %{_datadir}/credcheck
+mkdir -p %{buildroot}%{_datadir}/credcheck
+cp updates/* %{buildroot}%{_datadir}/credcheck
 
 %files
 %{_libdir}/pgsql/credcheck.so
-%{_datadir}/pgsql/extension/credcheck--*.sql
+%{_datadir}/pgsql/extension/credcheck--%{version}.0.sql
+%{_datadir}/credcheck/credcheck--*--*.sql
 %{_datadir}/pgsql/extension/credcheck.control
+%exclude %{_datadir}/pgsql/extension/credcheck--*--*.sql
 %doc README.md 
 %license LICENSE
 
