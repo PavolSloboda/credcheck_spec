@@ -11,12 +11,12 @@ Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
 
 %global deny_easy_pass 1
 
-BuildRequires: make (postgresql-server-devel or postgresql17-server-devel) gcc
+BuildRequires: make postgresql-server-devel-any gcc
 %if %{deny_easy_pass} == 1
 BuildRequires: cracklib-devel
 %endif
 #the lowest version on fedora 42 is 16.0
-Requires: (postgresql >= 12.0 or postgresql17)
+Requires: postgresql-server-any
 %if %{deny_easy_pass} == 1
 Requires: cracklib cracklib-dicts words
 %endif
