@@ -59,7 +59,7 @@ sed -i 's/#SHLIB_LINK/SHLIB_LINK/g' %{_builddir}/%{name}-%{version}/Makefile
 %make_install
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/credcheck
-cp updates/* %{buildroot}%{_datadir}/credcheck
+mv %{buildroot}%{_datadir}/pgsql/extension/credcheck--*--*.sql %{buildroot}%{_datadir}/credcheck
 
 #TODO
 #this needs to be done but the question is whether by the package install or the user
@@ -77,7 +77,6 @@ cp updates/* %{buildroot}%{_datadir}/credcheck
 %{_datadir}/pgsql/extension/credcheck--%{version}.0.sql
 %{_datadir}/credcheck/credcheck--*--*.sql
 %{_datadir}/pgsql/extension/credcheck.control
-%exclude %{_datadir}/pgsql/extension/credcheck--*--*.sql
 %doc README.md 
 %license LICENSE
 
