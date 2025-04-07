@@ -18,9 +18,8 @@ BuildRequires: cracklib-devel
 #the lowest version on fedora 42 is 16.0
 Requires: postgresql-server-any
 %if %{deny_easy_pass} == 1
-Requires: cracklib cracklib-dicts words
+Requires: cracklib-dicts cracklib-devel
 %endif
-
 
 %description
 The credcheck PostgreSQL extension provides few general credential checks,
