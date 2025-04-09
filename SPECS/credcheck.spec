@@ -6,6 +6,7 @@ License: MIT
 URL: https://github.com/HexaCluster/credcheck
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{_sourcedir}/%{name}.te
+Patch: enable_cracklib.patch
 
 %global deny_easy_pass 1
 
@@ -44,18 +45,16 @@ settings for the credential checks. The settings can only be changed by a superu
 
 %prep
 %setup
+%if %{deny_easy_pass} == 1
+#uncomments the lines in the makefile necessary for
+#using the version that forbids easily crackable passwords
+%patch 0 -p1
+%endif
 
 #TODO
 #save a database as a test
 
 %build
-%if %{deny_easy_pass} == 1
-#uncomments the lines in the makefile necessary for
-#using the version that forbids easily crackable passwords
-sed -i 's/#PG_CPPFLAGS/PG_CPPFLAGS/g' %{_builddir}/%{name}-%{version}/Makefile
-sed -i 's/#SHLIB_LINK/SHLIB_LINK/g' %{_builddir}/%{name}-%{version}/Makefile
-sed -i 's|-DCRACKLIB_DICTPATH=\"/usr/lib/cracklib_dict\"|-DCRACKLIB_DICTPATH=\"/usr/share/cracklib/pw_dict\"|g' %{_builddir}/%{name}-%{version}/Makefile
-%endif
 %make_build
 
 %install
