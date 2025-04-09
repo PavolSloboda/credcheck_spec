@@ -52,8 +52,8 @@ by a superuser.
 #uncomments the lines in the makefile necessary for
 #using the version that forbids easily crackable passwords
 %patch 0 -p1
-%patch 1 -p1
 %endif
+%patch 1 -p1
 
 #TODO
 #save a database as a test
@@ -66,12 +66,14 @@ by a superuser.
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
+%if %{deny_easy_pass} == 1
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
 cp %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
 mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/selinux/packages/targeted
 rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
 rm -rf %{buildroot}%{_datadir}/tmp
+%endif
 
 #TODO
 #this needs to be done but the question is whether by the package install or the user
@@ -85,10 +87,14 @@ rm -rf %{buildroot}%{_datadir}/tmp
 #%endif
 
 %post
+%if %{deny_easy_pass} == 1
 %selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/%{name}.pp
+%endif
 
 %postun
+%if %{deny_easy_pass} == 1
 %selinux_modules_uninstall -s "targeted" %{name}
+%endif
 
 %files
 %doc README.md 
@@ -97,7 +103,9 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %{_datadir}/pgsql/extension/%{name}--%{version}.0.sql
 %{_datadir}/pgsql/extension/%{name}.control
 %{_datadir}/%{name}/%{name}--*--*.sql
+%if %{deny_easy_pass} == 1
 %{_datadir}/selinux/packages/targeted/%{name}.pp
+%endif
 
 %changelog
 %autochangelog
