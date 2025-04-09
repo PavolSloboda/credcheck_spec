@@ -2,7 +2,7 @@ Name: credcheck
 Version: 3.0
 Release: %autorelease 
 Summary: PostreSQL extension for credential checking
-License: MIT
+License: PostgreSQL
 URL: https://github.com/HexaCluster/credcheck
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{_sourcedir}/%{name}.te
@@ -13,8 +13,8 @@ Patch: enable_cracklib.patch
 BuildRequires: make postgresql-server-devel gcc
 %if %{deny_easy_pass} == 1
 BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
-
 %endif
+
 #the lowest version of postgresql on fedora 42 is 16.0
 #therefore the requirement of this  package for version 10.0 and up 
 #(12.0 when the Password Reuse Policy feature is used) is automatically
