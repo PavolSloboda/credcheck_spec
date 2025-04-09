@@ -67,9 +67,7 @@ mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
 cp %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
 mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/selinux/packages/targeted
-rm %{buildroot}%{_datadir}/%{name}.te
-rm %{buildroot}%{_datadir}/%{name}.fc
-rm %{buildroot}%{_datadir}/%{name}.if
+rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
 rm -rf %{buildroot}%{_datadir}/tmp
 
 #TODO
