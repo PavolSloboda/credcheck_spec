@@ -4,7 +4,8 @@ Release: %autorelease
 Summary: PostreSQL extension for credential checking
 License: MIT
 URL: https://github.com/HexaCluster/credcheck
-Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
+Source0: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
+Source1: %{_sourcedir}/credcheck.te
 
 %global deny_easy_pass 1
 
@@ -59,7 +60,7 @@ sed -i 's|-DCRACKLIB_DICTPATH=\"/usr/lib/cracklib_dict\"|-DCRACKLIB_DICTPATH=\"/
 mkdir -p %{buildroot}%{_datadir}/credcheck
 mv %{buildroot}%{_datadir}/pgsql/extension/credcheck--*--*.sql %{buildroot}%{_datadir}/credcheck
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
-cp %{_sourcedir}/credcheck.te %{buildroot}%{_datadir}
+cp %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile credcheck.pp
 mv %{buildroot}%{_datadir}/credcheck.pp %{buildroot}%{_datadir}/selinux/packages/targeted
 rm %{buildroot}%{_datadir}/credcheck.te
