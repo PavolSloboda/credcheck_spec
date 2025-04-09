@@ -2,10 +2,7 @@ Name: credcheck
 Version: 3.0
 Release: %autorelease 
 Summary: PostreSQL extension for credential checking
-#TODO
-#the license does not match
-#it does match the MIT - 0 License but not in name
-License: PostgreSQL License
+License: MIT
 URL: https://github.com/HexaCluster/credcheck
 Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
 
