@@ -7,6 +7,7 @@ URL: https://github.com/HexaCluster/credcheck
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{name}.te
 Patch0: enable_cracklib.patch
+Patch1: upstream_db7c811a02f286b9ba3e81a219826bf47eca6d4e.patch
 
 %global deny_easy_pass 1
 
@@ -51,6 +52,7 @@ by a superuser.
 #uncomments the lines in the makefile necessary for
 #using the version that forbids easily crackable passwords
 %patch 0 -p1
+%patch 1 -p1
 %endif
 
 #TODO
