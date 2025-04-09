@@ -13,6 +13,7 @@ Patch: enable_cracklib.patch
 BuildRequires: make postgresql-server-devel gcc
 %if %{deny_easy_pass} == 1
 BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
+
 %endif
 #the lowest version of postgresql on fedora 42 is 16.0
 #therefore the requirement of this  package for version 10.0 and up 
@@ -89,13 +90,13 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %selinux_modules_uninstall -s "targeted" %{name}
 
 %files
-%{_libdir}/pgsql/%{name}.so
-%{_datadir}/pgsql/extension/%{name}--%{version}.0.sql
-%{_datadir}/%{name}/%{name}--*--*.sql
-%{_datadir}/pgsql/extension/%{name}.control
-%{_datadir}/selinux/packages/targeted/%{name}.pp
 %doc README.md 
 %license LICENSE
+%{_libdir}/pgsql/%{name}.so
+%{_datadir}/pgsql/extension/%{name}--%{version}.0.sql
+%{_datadir}/pgsql/extension/%{name}.control
+%{_datadir}/%{name}/%{name}--*--*.sql
+%{_datadir}/selinux/packages/targeted/%{name}.pp
 
 %changelog
 %autochangelog
