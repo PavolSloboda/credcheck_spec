@@ -5,7 +5,7 @@ Summary: PostreSQL extension for credential checking
 License: PostgreSQL
 URL: https://github.com/HexaCluster/credcheck
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
-Source1: %{_sourcedir}/%{name}.te
+Source1: %{name}.te
 Patch: enable_cracklib.patch
 
 %global deny_easy_pass 1
@@ -42,10 +42,11 @@ This extension provides all the checks as configurable parameters.
 The default configuration settings, will not enforce any complex checks
 and will try to allow most of the credentials.
 By using SET credcheck.<check-name> TO <some value>; command, enforce new
-settings for the credential checks. The settings can only be changed by a superuser.
+settings for the credential checks. The settings can only be changed 
+by a superuser.
 
 %prep
-%setup
+%setup -q
 %if %{deny_easy_pass} == 1
 #uncomments the lines in the makefile necessary for
 #using the version that forbids easily crackable passwords
