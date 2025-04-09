@@ -79,16 +79,17 @@ rm -rf %{buildroot}%{_datadir}/tmp
 #%endif
 
 %post
-sudo semodule -i -s "targeted" %{_datadir}/selinux/packages/targeted/credcheck.pp
+%selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/credcheck.pp
 
 %postun
-sudo semodule -r -s "targeted" credcheck
+%selinux_modules_uninstall -s "targeted" credcheck
 
 %files
 %{_libdir}/pgsql/credcheck.so
 %{_datadir}/pgsql/extension/credcheck--%{version}.0.sql
 %{_datadir}/credcheck/credcheck--*--*.sql
 %{_datadir}/pgsql/extension/credcheck.control
+%{_datadir}/selinux/packages/targeted/credcheck.pp
 %doc README.md 
 %license LICENSE
 
