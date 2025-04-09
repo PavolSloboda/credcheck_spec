@@ -13,12 +13,13 @@ Source: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
 
 BuildRequires: make postgresql-server-devel gcc
 %if %{deny_easy_pass} == 1
-BuildRequires: cracklib-devel
+BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 %endif
 #the lowest version on fedora 42 is 16.0
 Requires: postgresql-server-any
 %if %{deny_easy_pass} == 1
-Requires: cracklib-dicts cracklib-devel
+Requires: cracklib-dicts
+Requires(post): libselinux-utils
 %endif
 
 %description
@@ -51,6 +52,7 @@ settings for the credential checks. The settings can only be changed by a superu
 #using the version that forbids easily crackable passwords
 sed -i 's/#PG_CPPFLAGS/PG_CPPFLAGS/g' %{_builddir}/%{name}-%{version}/Makefile
 sed -i 's/#SHLIB_LINK/SHLIB_LINK/g' %{_builddir}/%{name}-%{version}/Makefile
+sed -i 's|-DCRACKLIB_DICTPATH=\"/usr/lib/cracklib_dict\"|-DCRACKLIB_DICTPATH=\"/usr/share/cracklib/pw_dict\"|g' %{_builddir}/%{name}-%{version}/Makefile
 %endif
 %make_build
 
@@ -59,6 +61,14 @@ sed -i 's/#SHLIB_LINK/SHLIB_LINK/g' %{_builddir}/%{name}-%{version}/Makefile
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/credcheck
 mv %{buildroot}%{_datadir}/pgsql/extension/credcheck--*--*.sql %{buildroot}%{_datadir}/credcheck
+mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
+cp %{_sourcedir}/credcheck.te %{buildroot}%{_datadir}
+cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile credcheck.pp
+mv %{buildroot}%{_datadir}/credcheck.pp %{buildroot}%{_datadir}/selinux/packages/targeted
+rm %{buildroot}%{_datadir}/credcheck.te
+rm %{buildroot}%{_datadir}/credcheck.fc
+rm %{buildroot}%{_datadir}/credcheck.if
+rm -rf %{buildroot}%{_datadir}/tmp
 
 #TODO
 #this needs to be done but the question is whether by the package install or the user
@@ -70,6 +80,12 @@ mv %{buildroot}%{_datadir}/pgsql/extension/credcheck--*--*.sql %{buildroot}%{_da
 #also needs to append credcheck to shared_preloaded_libraries in /var/lib/pgsql/data/postgresql.conf
 #and then restart the postgresql.service
 #%endif
+
+%post
+sudo semodule -i -s "targeted" %{_datadir}/selinux/packages/targeted/credcheck.pp
+
+%postun
+sudo semodule -r -s "targeted" credcheck
 
 %files
 %{_libdir}/pgsql/credcheck.so
