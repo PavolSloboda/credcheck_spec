@@ -4,8 +4,8 @@ Release: %autorelease
 Summary: PostreSQL extension for credential checking
 License: MIT
 URL: https://github.com/HexaCluster/credcheck
-Source0: https://github.com/HexaCluster/credcheck/archive/refs/tags/v3.0.tar.gz
-Source1: %{_sourcedir}/credcheck.te
+Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
+Source1: %{_sourcedir}/%{name}.te
 
 %global deny_easy_pass 1
 
@@ -57,15 +57,15 @@ sed -i 's|-DCRACKLIB_DICTPATH=\"/usr/lib/cracklib_dict\"|-DCRACKLIB_DICTPATH=\"/
 %install
 %make_install
 #creates the credcheck file to contain the patches
-mkdir -p %{buildroot}%{_datadir}/credcheck
-mv %{buildroot}%{_datadir}/pgsql/extension/credcheck--*--*.sql %{buildroot}%{_datadir}/credcheck
+mkdir -p %{buildroot}%{_datadir}/%{name}
+mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
 cp %{SOURCE1} %{buildroot}%{_datadir}
-cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile credcheck.pp
-mv %{buildroot}%{_datadir}/credcheck.pp %{buildroot}%{_datadir}/selinux/packages/targeted
-rm %{buildroot}%{_datadir}/credcheck.te
-rm %{buildroot}%{_datadir}/credcheck.fc
-rm %{buildroot}%{_datadir}/credcheck.if
+cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
+mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/selinux/packages/targeted
+rm %{buildroot}%{_datadir}/%{name}.te
+rm %{buildroot}%{_datadir}/%{name}.fc
+rm %{buildroot}%{_datadir}/%{name}.if
 rm -rf %{buildroot}%{_datadir}/tmp
 
 #TODO
@@ -80,17 +80,17 @@ rm -rf %{buildroot}%{_datadir}/tmp
 #%endif
 
 %post
-%selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/credcheck.pp
+%selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/%{name}.pp
 
 %postun
-%selinux_modules_uninstall -s "targeted" credcheck
+%selinux_modules_uninstall -s "targeted" %{name}
 
 %files
-%{_libdir}/pgsql/credcheck.so
-%{_datadir}/pgsql/extension/credcheck--%{version}.0.sql
-%{_datadir}/credcheck/credcheck--*--*.sql
-%{_datadir}/pgsql/extension/credcheck.control
-%{_datadir}/selinux/packages/targeted/credcheck.pp
+%{_libdir}/pgsql/%{name}.so
+%{_datadir}/pgsql/extension/%{name}--%{version}.0.sql
+%{_datadir}/%{name}/%{name}--*--*.sql
+%{_datadir}/pgsql/extension/%{name}.control
+%{_datadir}/selinux/packages/targeted/%{name}.pp
 %doc README.md 
 %license LICENSE
 
