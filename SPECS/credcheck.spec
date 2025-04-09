@@ -6,7 +6,7 @@ License: PostgreSQL
 URL: https://github.com/HexaCluster/credcheck
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{name}.te
-Patch: enable_cracklib.patch
+Patch0: enable_cracklib.patch
 
 %global deny_easy_pass 1
 
