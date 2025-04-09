@@ -13,7 +13,11 @@ BuildRequires: make postgresql-server-devel gcc
 %if %{deny_easy_pass} == 1
 BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 %endif
-#the lowest version on fedora 42 is 16.0
+#the lowest version of postgresql on fedora 42 is 16.0
+#therefore the requirement of this  package for version 10.0 and up 
+#(12.0 when the Password Reuse Policy feature is used) is automatically
+#satisfied and there is no need to specify the lowest version of
+#postgresql-server in the Requires macro
 Requires: postgresql-server-any
 %if %{deny_easy_pass} == 1
 Requires: cracklib-dicts
