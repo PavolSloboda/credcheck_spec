@@ -3,7 +3,7 @@ Version: 3.0
 Release: %autorelease 
 Summary: PostreSQL extension for credential checking
 License: PostgreSQL
-URL: https://github.com/HexaCluster/credcheck
+URL: https://github.com/HexaCluster/%{name}
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{name}.te
 Patch0: enable_cracklib.patch
