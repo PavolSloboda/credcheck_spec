@@ -1,7 +1,7 @@
 Name: credcheck
 Version: 3.0
 Release: %autorelease 
-Summary: PostreSQL extension for credential checking
+Summary: PostgreSQL extension for credential checking
 License: PostgreSQL
 URL: https://github.com/HexaCluster/%{name}
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
