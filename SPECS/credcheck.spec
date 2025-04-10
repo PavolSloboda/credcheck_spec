@@ -89,8 +89,12 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %{_datadir}/pgsql/extension/%{name}--%{version}.0.sql
 %{_datadir}/pgsql/extension/%{name}.control
 %{_datadir}/%{name}/%{name}--*--*.sql
+%dir %{_datadir}/%{name}
 %if %{deny_easy_pass} == 1
 %{_datadir}/selinux/packages/targeted/%{name}.pp
+%dir %{_datadir}/selinux
+%dir %{_datadir}/selinux/packages
+%dir %{_datadir}/selinux/packages/targeted
 %endif
 
 %changelog
