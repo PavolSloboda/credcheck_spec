@@ -55,9 +55,6 @@ by a superuser.
 %endif
 %patch 1 -p1
 
-#TODO
-#save a database as a test
-
 %build
 %make_build
 
@@ -74,17 +71,6 @@ mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/selinux/packages/t
 rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
 rm -rf %{buildroot}%{_datadir}/tmp
 %endif
-
-#TODO
-#this needs to be done but the question is whether by the package install or the user
-#it also requires the words package to function
-#%if %{deny_easy_pass} == 1
-##this is necessary or the password is easily cracked check
-##goes off on everything (the files can't even be created as empty)
-#mkdict /usr/share/dict/* | sudo cracklib-packer /usr/lib/cracklib_dict
-#also needs to append credcheck to shared_preloaded_libraries in /var/lib/pgsql/data/postgresql.conf
-#and then restart the postgresql.service
-#%endif
 
 %post
 %if %{deny_easy_pass} == 1
