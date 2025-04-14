@@ -1,3 +1,4 @@
+%bcond_without cracklib
 Name: credcheck
 Version: 3.0
 Release: %autorelease 
@@ -9,15 +10,15 @@ Source1: %{name}.te
 #patch containing the changes to the Makefile necessary to compile the package
 #to use the cracklib package as mentioned in README.md on lines 42 and 43
 #https://github.com/HexaCluster/credcheck/blob/master/README.md
+%if %{with cracklib}
 Patch0: enable_cracklib.patch
+%endif
 #patch containing the latest license change taken from commit:
 #https://github.com/HexaCluster/credcheck/commit/db7c811a02f286b9ba3e81a219826bf47eca6d4e
 Patch1: upstream_db7c811a02f286b9ba3e81a219826bf47eca6d4e.patch
 
-%global deny_easy_pass 1
-
 BuildRequires: make postgresql-server-devel gcc
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 %endif
 
@@ -27,7 +28,7 @@ BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 #satisfied and there is no need to specify the lowest version of
 #postgresql-server in the Requires macro
 Requires: postgresql-server-any
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 Requires: cracklib-dicts
 Requires(post): libselinux-utils
 %endif
@@ -62,7 +63,7 @@ by a superuser.
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
 cp %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
@@ -72,12 +73,12 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %endif
 
 %post
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 %selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/%{name}.pp
 %endif
 
 %postun
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 %selinux_modules_uninstall -s "targeted" %{name}
 %endif
 
@@ -89,7 +90,7 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %{_datadir}/pgsql/extension/%{name}.control
 %{_datadir}/%{name}/%{name}--*--*.sql
 %dir %{_datadir}/%{name}
-%if %{deny_easy_pass} == 1
+%if %{with cracklib}
 %{_datadir}/selinux/packages/targeted/%{name}.pp
 %dir %{_datadir}/selinux
 %dir %{_datadir}/selinux/packages
