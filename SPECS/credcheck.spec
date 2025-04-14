@@ -1,3 +1,7 @@
+#controls whether or not cracklib will be used during the build of the package
+#building without cracklib will result in the package not having the
+#deny_easy_pass functionality (checking for easily crackable passwords
+#using cracklib and dictionaries)
 %bcond_without cracklib
 Name: credcheck
 Version: 3.0
