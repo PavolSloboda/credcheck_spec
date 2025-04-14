@@ -6,6 +6,9 @@ License: PostgreSQL
 URL: https://github.com/HexaCluster/%{name}
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{name}.te
+#patch containing the changes to the Makefile necessary to compile the package
+#to use the cracklib package as mentioned in README.md on lines 42 and 43
+#https://github.com/HexaCluster/credcheck/blob/master/README.md
 Patch0: enable_cracklib.patch
 #patch containing the latest license change taken from commit:
 #https://github.com/HexaCluster/credcheck/commit/db7c811a02f286b9ba3e81a219826bf47eca6d4e
