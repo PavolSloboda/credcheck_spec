@@ -10,11 +10,15 @@ Summary: PostgreSQL extension for credential checking
 License: PostgreSQL
 URL: https://github.com/HexaCluster/%{name}
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
+%if %{with cracklib}
+#a SELinux rule template to enable reading of the dictionaries
+#provided by the cracklib-dict package
+#an augmented version of the rule used by cracklib-password-check-plugin
+#for mariadb: https://mariadb.com/kb/en/cracklib-password-check-plugin/
 Source1: %{name}.te
 #patch containing the changes to the Makefile necessary to compile the package
 #to use the cracklib package as mentioned in README.md on lines 42 and 43
 #https://github.com/HexaCluster/credcheck/blob/master/README.md
-%if %{with cracklib}
 Patch0: enable_cracklib.patch
 %endif
 #patch containing the latest license change taken from commit:
