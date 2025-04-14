@@ -76,13 +76,11 @@ rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
 rm -rf %{buildroot}%{_datadir}/tmp
 %endif
 
-%post
 %if %{with cracklib}
+%post
 %selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/%{name}.pp
-%endif
 
 %postun
-%if %{with cracklib}
 %selinux_modules_uninstall -s "targeted" %{name}
 %endif
 
