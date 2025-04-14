@@ -52,13 +52,7 @@ settings for the credential checks. The settings can only be changed
 by a superuser.
 
 %prep
-%setup -q
-%if %{deny_easy_pass} == 1
-#uncomments the lines in the makefile necessary for
-#using the version that forbids easily crackable passwords
-%patch 0 -p1
-%endif
-%patch 1 -p1
+%autosetup
 
 %build
 %make_build
