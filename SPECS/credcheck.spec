@@ -7,6 +7,8 @@ URL: https://github.com/HexaCluster/%{name}
 Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1: %{name}.te
 Patch0: enable_cracklib.patch
+#patch containing the latest license change taken from commit:
+#https://github.com/HexaCluster/credcheck/commit/db7c811a02f286b9ba3e81a219826bf47eca6d4e
 Patch1: upstream_db7c811a02f286b9ba3e81a219826bf47eca6d4e.patch
 
 %global deny_easy_pass 1
