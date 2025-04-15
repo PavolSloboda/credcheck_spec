@@ -98,6 +98,7 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %dir %{_datadir}/%{name}
 %if %{with cracklib}
 %{_datadir}/%{name}/selinux/%{name}.pp
+%dir %{_datadir}/%{name}/selinux
 %endif
 
 %changelog
