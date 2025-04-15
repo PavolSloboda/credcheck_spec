@@ -73,7 +73,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
 %if %{with cracklib}
 mkdir -p %{buildroot}%{_datadir}/%{name}/selinux
-cp %{SOURCE1} %{buildroot}%{_datadir}
+cp -p %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
 mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/%{name}/selinux
 rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
