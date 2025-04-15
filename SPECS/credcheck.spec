@@ -72,17 +72,17 @@ by a superuser.
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
 %if %{with cracklib}
-mkdir -p %{buildroot}%{_datadir}/selinux/packages/targeted
+mkdir -p %{buildroot}%{_datadir}/%{name}/selinux
 cp %{SOURCE1} %{buildroot}%{_datadir}
 cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
-mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/selinux/packages/targeted
+mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/%{name}/selinux
 rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
 rm -rf %{buildroot}%{_datadir}/tmp
 %endif
 
 %if %{with cracklib}
 %post
-%selinux_modules_install -s "targeted" %{_datadir}/selinux/packages/targeted/%{name}.pp
+%selinux_modules_install -s "targeted" %{_datadir}/%{name}/selinux/%{name}.pp
 
 %postun
 %selinux_modules_uninstall -s "targeted" %{name}
@@ -97,10 +97,7 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %{_datadir}/%{name}/%{name}--*--*.sql
 %dir %{_datadir}/%{name}
 %if %{with cracklib}
-%{_datadir}/selinux/packages/targeted/%{name}.pp
-%dir %{_datadir}/selinux
-%dir %{_datadir}/selinux/packages
-%dir %{_datadir}/selinux/packages/targeted
+%{_datadir}/%{name}/selinux/%{name}.pp
 %endif
 
 %changelog
