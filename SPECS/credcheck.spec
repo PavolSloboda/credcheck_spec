@@ -3,6 +3,9 @@
 #deny_easy_pass functionality (checking for easily crackable passwords
 #using cracklib and dictionaries)
 %bcond_without cracklib
+#holds the selinux type of targeted for ease of access and modification
+#if the selinux policy changes
+%global selinuxtype targeted
 Name: credcheck
 Version: 3.0
 Release: %autorelease 
@@ -37,8 +40,8 @@ BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 #postgresql-server in the Requires macro
 Requires: postgresql-server-any
 %if %{with cracklib}
-Requires: cracklib-dicts
-Requires(post): libselinux-utils
+Requires: cracklib-dicts selinux-policy-%{selinuxtype}
+Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
 %endif
 
 %description
@@ -81,11 +84,17 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %endif
 
 %if %{with cracklib}
+%pre
+%selinux_relabel_pre -s %{selinuxtype}
+
 %post
-%selinux_modules_install -s "targeted" %{_datadir}/%{name}/selinux/%{name}.pp
+%selinux_modules_install -s %{selinuxtype} %{_datadir}/%{name}/selinux/%{name}.pp
 
 %postun
-%selinux_modules_uninstall -s "targeted" %{name}
+%selinux_modules_uninstall -s %{selinuxtype} %{name}
+
+%posttrans
+%selinux_relabel_post -s %{selinuxtype}
 %endif
 
 %files
