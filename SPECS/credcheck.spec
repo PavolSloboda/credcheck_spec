@@ -6,6 +6,7 @@
 #holds the selinux type of targeted for ease of access and modification
 #if the selinux policy changes
 %global selinuxtype targeted
+%global with_selinux 1
 Name: credcheck
 Version: 3.0
 Release: %autorelease 
@@ -30,7 +31,7 @@ Patch1: upstream_db7c811a02f286b9ba3e81a219826bf47eca6d4e.patch
 
 BuildRequires: make postgresql-server-devel gcc
 %if %{with cracklib}
-BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
+BuildRequires: cracklib-devel cracklib-dicts
 %endif
 
 #the lowest version of postgresql on fedora 42 is 16.0
@@ -40,8 +41,10 @@ BuildRequires: cracklib-devel cracklib-dicts selinux-policy-devel
 #postgresql-server in the Requires macro
 Requires: postgresql-server-any
 %if %{with cracklib}
-Requires: cracklib-dicts selinux-policy-%{selinuxtype}
-Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
+Requires: cracklib-dicts
+%if 0%{?with_selinux}
+Requires: (%{name}-selinux if selinux-policy-%{selinxtype})
+%endif
 %endif
 
 %description
@@ -63,37 +66,60 @@ By using SET credcheck.<check-name> TO <some value>; command, enforce new
 settings for the credential checks. The settings can only be changed 
 by a superuser.
 
+%if %{with cracklib} && 0%{?with_selinux}
+#The SELinux subpackage
+%package selinux
+Summary: %{name} SELinux policy
+BuildArch: noarch
+BuildRequires: selinux-policy-devel
+Requires: selinux-policy-%{selinuxtype}
+Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
+%{?selinux_requires}
+
+%description selinux
+SELinux policy for the %{name} to ensure the dictionaries installed by the
+cracklib-dicts package are reachable by this package
+%endif
+
 %prep
 %autosetup
 
 %build
 %make_build
+%if %{with cracklib} && 0%{?with_selinux}
+mkdir selinux
+cp -p %{SOURCE1} selinux/
+make -f /usr/share/selinux/devel/Makefile %{name}.pp
+bzip2 -9 %{name}.pp
+%endif
 
 %install
 %make_install
 #creates the credcheck file to contain the patches
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
-%if %{with cracklib}
-mkdir -p %{buildroot}%{_datadir}/%{name}/selinux
-cp -p %{SOURCE1} %{buildroot}%{_datadir}
-cd %{buildroot}%{_datadir} && make -f /usr/share/selinux/devel/Makefile %{name}.pp
-mv %{buildroot}%{_datadir}/%{name}.pp %{buildroot}%{_datadir}/%{name}/selinux
-rm %{buildroot}%{_datadir}/%{name}.{te,fc,if}
-rm -rf %{buildroot}%{_datadir}/tmp
+%if %{with cracklib} && 0%{?with_selinux}
+install -D -m 0644 %{name}.pp.bz2 %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
+install -D -p -m 0644 selinux/%{name}.if %{buildroot}%{_datadir}/selinux/devel/include/distributed/%{name}.if
 %endif
 
-%if %{with cracklib}
-%pre
+%if %{with cracklib} && 0%{?with_selinux}
+#relabeling of selinux files
+%pre selinux
 %selinux_relabel_pre -s %{selinuxtype}
 
-%post
-%selinux_modules_install -s %{selinuxtype} %{_datadir}/%{name}/selinux/%{name}.pp
+#installing selinux rules
+%post selinux
+%selinux_modules_install -s %{selinuxtype} -p 200 %{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
 
-%postun
+#removing selinux rules
+%postun selinux
+if [ $1 -eq 0 ]; then
 %selinux_modules_uninstall -s %{selinuxtype} %{name}
+fi
 
-%posttrans
+#relabeling of selinux files
+%posttrans selinux
 %selinux_relabel_post -s %{selinuxtype}
 %endif
 
@@ -105,9 +131,12 @@ rm -rf %{buildroot}%{_datadir}/tmp
 %{_datadir}/pgsql/extension/%{name}.control
 %{_datadir}/%{name}/%{name}--*--*.sql
 %dir %{_datadir}/%{name}
-%if %{with cracklib}
-%{_datadir}/%{name}/selinux/%{name}.pp
-%dir %{_datadir}/%{name}/selinux
+
+%if %{with cracklib} && 0%{?with_selinux}
+%files selinux
+%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
+%{_datadir}/selinux/devel/include/distributed/%{name}.if
+%ghost %verify(not md5 size mode mtime) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{name}
 %endif
 
 %changelog
