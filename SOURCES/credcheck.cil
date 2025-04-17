@@ -1,0 +1,6 @@
+(optional credcheck_optional_2
+    (typeattributeset cil_gen_require postgresql_t)
+    (typeattributeset cil_gen_require crack_db_t)
+    (allow postgresql_t crack_db_t (dir (read open search)))
+    (allow postgresql_t crack_db_t (file (read getattr open)))
+)

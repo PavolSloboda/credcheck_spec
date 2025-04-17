@@ -19,7 +19,7 @@ Source0: https://github.com/HexaCluster/%{name}/archive/refs/tags/v%{version}.ta
 #provided by the cracklib-dict package
 #an augmented version of the rule used by cracklib-password-check-plugin
 #for mariadb: https://mariadb.com/kb/en/cracklib-password-check-plugin/
-Source1: %{name}.te
+Source1: %{name}.cil
 #patch containing the changes to the Makefile necessary to compile the package
 #to use the cracklib package as mentioned in README.md on lines 42 and 43
 #https://github.com/HexaCluster/credcheck/blob/master/README.md
@@ -89,8 +89,6 @@ cracklib-dicts package are reachable by this package.
 %if %{with cracklib} && 0%{?with_selinux}
 mkdir selinux
 cp -p %{SOURCE1} selinux/
-make -f /usr/share/selinux/devel/Makefile %{name}.pp
-bzip2 -9 %{name}.pp
 %endif
 
 %install
@@ -99,8 +97,7 @@ bzip2 -9 %{name}.pp
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
 %if %{with cracklib} && 0%{?with_selinux}
-install -D -m 0644 %{name}.pp.bz2 %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
-install -D -p -m 0644 selinux/%{name}.if %{buildroot}%{_datadir}/selinux/devel/include/distributed/%{name}.if
+install -D -m 0644 selinux/%{name}.cil %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
 %endif
 
 %if %{with cracklib} && 0%{?with_selinux}
@@ -110,7 +107,7 @@ install -D -p -m 0644 selinux/%{name}.if %{buildroot}%{_datadir}/selinux/devel/i
 
 #installing selinux rules
 %post selinux
-%selinux_modules_install -s %{selinuxtype} -p 200 %{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
+%selinux_modules_install -s %{selinuxtype} -p 200 %{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
 
 #removing selinux rules
 %postun selinux
@@ -134,8 +131,7 @@ fi
 
 %if %{with cracklib} && 0%{?with_selinux}
 %files selinux
-%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.pp.bz2
-%{_datadir}/selinux/devel/include/distributed/%{name}.if
+%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
 %ghost %verify(not md5 size mode mtime) %{_sharedstatedir}/selinux/%{selinuxtype}/active/modules/200/%{name}
 %endif
 
