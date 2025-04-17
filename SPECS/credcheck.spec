@@ -43,7 +43,7 @@ Requires: postgresql-server-any
 %if %{with cracklib}
 Requires: cracklib-dicts
 %if 0%{?with_selinux}
-Requires: (%{name}-selinux if selinux-policy-%{selinxtype})
+Requires: (%{name}-selinux if selinux-policy-%{selinuxtype})
 %endif
 %endif
 
@@ -74,6 +74,7 @@ BuildArch: noarch
 BuildRequires: selinux-policy-devel
 Requires: selinux-policy-%{selinuxtype}
 Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
+Requires: %{name} = %{version}-%{release}
 %{?selinux_requires}
 
 %description selinux
