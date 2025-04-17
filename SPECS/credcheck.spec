@@ -71,10 +71,8 @@ by a superuser.
 %package selinux
 Summary: %{name} SELinux policy
 BuildArch: noarch
-BuildRequires: selinux-policy-devel
 Requires: selinux-policy-%{selinuxtype}
-Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
-%{?selinux_requires}
+Requires(post): libselinux-utils selinux-policy-%{selinuxtype} policycoreutils
 
 %description selinux
 SELinux policy for the %{name} to ensure the dictionaries installed by the
@@ -86,10 +84,6 @@ cracklib-dicts package are reachable by this package.
 
 %build
 %make_build
-%if %{with cracklib} && 0%{?with_selinux}
-mkdir selinux
-cp -p %{SOURCE1} selinux/
-%endif
 
 %install
 %make_install
@@ -97,14 +91,10 @@ cp -p %{SOURCE1} selinux/
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mv %{buildroot}%{_datadir}/pgsql/extension/%{name}--*--*.sql %{buildroot}%{_datadir}/%{name}
 %if %{with cracklib} && 0%{?with_selinux}
-install -D -m 0644 selinux/%{name}.cil %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
+install -D -m 0644 %{SOURCE1} %{buildroot}%{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
 %endif
 
 %if %{with cracklib} && 0%{?with_selinux}
-#relabeling of selinux files
-%pre selinux
-%selinux_relabel_pre -s %{selinuxtype}
-
 #installing selinux rules
 %post selinux
 %selinux_modules_install -s %{selinuxtype} -p 200 %{_datadir}/selinux/packages/%{selinuxtype}/%{name}.cil
@@ -114,10 +104,6 @@ install -D -m 0644 selinux/%{name}.cil %{buildroot}%{_datadir}/selinux/packages/
 if [ $1 -eq 0 ]; then
 %selinux_modules_uninstall -s %{selinuxtype} %{name}
 fi
-
-#relabeling of selinux files
-%posttrans selinux
-%selinux_relabel_post -s %{selinuxtype}
 %endif
 
 %files
