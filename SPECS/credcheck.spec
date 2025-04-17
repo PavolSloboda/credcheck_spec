@@ -79,7 +79,7 @@ Requires: %{name} = %{version}-%{release}
 
 %description selinux
 SELinux policy for the %{name} to ensure the dictionaries installed by the
-cracklib-dicts package are reachable by this package
+cracklib-dicts package are reachable by this package.
 %endif
 
 %prep
