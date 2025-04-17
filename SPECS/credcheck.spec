@@ -74,7 +74,6 @@ BuildArch: noarch
 BuildRequires: selinux-policy-devel
 Requires: selinux-policy-%{selinuxtype}
 Requires(post): libselinux-utils selinux-policy-%{selinuxtype}
-Requires: %{name} = %{version}-%{release}
 %{?selinux_requires}
 
 %description selinux
