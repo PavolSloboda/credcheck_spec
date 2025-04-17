@@ -72,6 +72,7 @@ by a superuser.
 Summary: %{name} SELinux policy
 BuildArch: noarch
 Requires: selinux-policy-%{selinuxtype}
+Recommends: %{name} = %{version}-%{release}
 Requires(post): libselinux-utils selinux-policy-%{selinuxtype} policycoreutils
 
 %description selinux
