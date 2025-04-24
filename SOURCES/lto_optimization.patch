@@ -1,0 +1,7 @@
+--- BUILD/credcheck-3.0-build/credcheck-3.0/Makefile	2025-04-24 09:16:22.230431145 +0200
++++ /tmp/credcheck-3.0/Makefile	2025-04-24 09:02:48.269979409 +0200
+@@ -9,3 +9,3 @@
+ 
+-PG_CPPFLAGS += -Wno-ignored-attributes
++PG_CPPFLAGS += -Wno-ignored-attributes -flto
+ 
